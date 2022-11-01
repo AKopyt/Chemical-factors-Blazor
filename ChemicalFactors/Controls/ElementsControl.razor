@@ -149,7 +149,7 @@
                     <td>Fm</td>
                     <td>Md</td>
                     <td>No</td>
-                    <td>Lr</td>
+                    <td @onclick='(()=>SelectElement(new Element("Lr")))'>Lr</td>
                 </tr>
             </table>
             </center>
@@ -157,5 +157,13 @@
         </div>
 
 @code {
+    public Element CurrentElement = null;
+
+    public void SelectElement(Element element)
+    {
+
+        CurrentElement = element;
+
+    }
 
 }
