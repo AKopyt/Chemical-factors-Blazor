@@ -99,6 +99,62 @@ td:hover {
     border: #707070;
 }
 
+#sideofreaction
+{
+    position:relative;
+    clear:both;
+
+
+}
+#leftbutton {
+    background-color: #742D2D;
+    color: white;
+    padding: 10px;
+    border-radius: 25px;
+    font-size: 10px;
+    position: relative;
+    left: 700px;
+    bottom: 5px;
+    border: #707070;
+}
+
+#rightbutton {
+    background-color: #742D2D;
+    color: white;
+    padding: 10px;
+    border-radius: 25px;
+    font-size: 10px;
+    position: relative;
+    left: 1000px;
+    bottom: 5px;
+    border: #707070;
+}
+
+.leftlist {
+    background-color: red;
+    float: left;
+    height: 100px;
+    width: 500px;
+    display: inline;
+    writing-mode: horizontal-tb;
+
+    p {
+        color: black;
+    }
+
+   
+}
+
+#rightlist 
+{
+   background-color:yellow;
+   float:left;
+   height:100px;
+   position:center;
+   font-weight:500px;
+   display:inline;
+   
+}
 #button:hover {
     background-color: #631C1C;
 }
@@ -121,7 +177,7 @@ p {
 .arrow1 {
     height: 70px;
     position: relative;
-    left: 900px;
+    left: 0px;
     top: 40px;
 }
 

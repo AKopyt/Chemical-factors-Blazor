@@ -1,9 +1,44 @@
 ﻿<div id="reaction">
-           
-    <img class="arrow1" src="/img/arrow.svg"/>
-            
+    
+    <div class="leftlist">
+        @foreach (var element in ReactionViewModel.SubstratsList)
+        {
+            @element.Symbol
+
+        }
+    </div>
+    <div id="rightlist">
+        @foreach (var element in ReactionViewModel.ProductsList)
+        {
+            @element.Symbol
+
+        }
+
+    </div>
+    <img class="arrow1" src="/img/arrow.svg" />
+
+
+</div>
+<div id="sideofreaction">
+    <button id="leftbutton">SUBSTRATES</button>
+    <button id="rightbutton">PRODUCTS</button>
 </div>
 
+
 @code {
+
+    [Parameter]
+    public ReactionViewModel ReactionViewModel { get; set; }
+
+    [Parameter]
+    public EventCallback<ReactionViewModel> ReactionViewModelChanged { get; set; }
+
+    [Parameter]
+    public Element CurrentElement { get; set; }
+
+    [Parameter]
+    public EventCallback<Element> CurrentElementChanged { get; set; }
+
+   
 
 }

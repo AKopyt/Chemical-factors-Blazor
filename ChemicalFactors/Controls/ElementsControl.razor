@@ -145,24 +145,32 @@
                     <td>Cm</td>
                     <td>Bk</td>
                     <td>Cf</td>
-                    <td>Es</td>
-                    <td>Fm</td>
-                    <td>Md</td>
-                    <td>No</td>
-                    <td @onclick='(()=>SelectElement(new Element("Lr")))'>Lr</td>
+                    <td @onclick='(()=>SelectElement("Es"))'>Es</td>
+                    <td @onclick='(()=>SelectElement("Fm"))'>Fm</td>
+                    <td @onclick='(()=>SelectElement("Md"))'>Md</td>
+                    <td @onclick='(()=>SelectElement("No"))'>No</td>
+                    <td @onclick='(()=>SelectElement("Lr"))'>Lr</td>
                 </tr>
             </table>
             </center>
 
         </div>
 
-@code {
-    public Element CurrentElement = null;
+ @code {
 
-    public void SelectElement(Element element)
+     [Parameter]
+     public Element CurrentElement { get; set; }
+
+     [Parameter]
+     public EventCallback<Element> CurrentElementChanged { get; set; }
+
+
+    public async Task SelectElement(string nazwa)
     {
-
-        CurrentElement = element;
+       
+        CurrentElement = new Element(nazwa);
+        await CurrentElementChanged.InvokeAsync(CurrentElement);
+        Console.WriteLine(nazwa);
 
     }
 

@@ -1,12 +1,42 @@
 ﻿@page "/"
 @using ChemicalFactors.Controls
+@using Microsoft.Extensions.Logging.Abstractions
 
 <PageTitle>Chemistry factors</PageTitle>
 
 <div id="container">
-    <ElementsControl />
-    <ReactionControl />
+    <ElementsControl @bind-CurrentElement="@CurrentElement"/>
+    <ReactionControl @bind-ReactionViewModel="@_reactionViewModel" />
     <ToolBoxControl />
     <ResultControl />
 </div>
 
+
+
+@code
+{
+    private Element _currentElement = new Element("Pusty");
+
+    private ReactionViewModel _reactionViewModel = new ReactionViewModel();
+
+    public Element CurrentElement
+    {
+        get { return _currentElement; }
+        set
+        {
+            if (value != _currentElement)
+            {
+                _currentElement = value;
+                _reactionViewModel.PushToList(_currentElement);
+                InvokeAsync(StateHasChanged);
+            }
+            
+        }
+
+    } 
+
+
+
+
+
+}
