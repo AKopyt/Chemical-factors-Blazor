@@ -7,7 +7,7 @@
 <div id="container">
     <ElementsControl @bind-CurrentElement="@CurrentElement"/>
     <ReactionControl @bind-ReactionViewModel="@_reactionViewModel" />
-    <ToolBoxControl />
+    <ToolBoxControl @bind-CurrentElement="@CurrentElement"/>
     <ResultControl />
 </div>
 
@@ -15,11 +15,11 @@
 
 @code
 {
-    private Element _currentElement = new Element("Pusty");
+    private IElement _currentElement = new Element("Empty");
 
     private ReactionViewModel _reactionViewModel = new ReactionViewModel();
 
-    public Element CurrentElement
+    public IElement CurrentElement
     {
         get { return _currentElement; }
         set

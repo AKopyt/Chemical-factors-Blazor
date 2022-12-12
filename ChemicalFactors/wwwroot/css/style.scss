@@ -59,6 +59,7 @@ td:hover {
 
 #reaction {
     height: 150px;
+    justify-content : center;
 }
 
 #elements {
@@ -98,7 +99,16 @@ td:hover {
     bottom: 30px;
     border: #707070;
 }
+#index
+{
+    font-size: 15px;
+    border : none;
+    position : relative;
+    left: 250 px;
+    top:30px;
 
+
+}
 #sideofreaction
 {
     position:relative;
@@ -175,10 +185,12 @@ p {
 }
 
 .arrow1 {
+    
     height: 70px;
     position: relative;
     left: 0px;
     top: 40px;
+    float: left;
 }
 
 .arrow2 {

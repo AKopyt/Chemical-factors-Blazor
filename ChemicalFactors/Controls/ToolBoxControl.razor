@@ -1,19 +1,40 @@
 ﻿
 <div id="toolbox">
+    <div id="index">
+        
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(1)))'>1</button>
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(2)))'>2</button>
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(3)))'>3</button>
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(4)))'>4</button>
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(5)))'>5</button>
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(6)))'>6</button>
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(7)))'>7</button>
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(8)))'>8</button>
+        <button @onclick='(()=>SelectIElement(new IndexInReaction(9)))'>9</button>
+    </div>
     <table class="table3">
         <tr>
-            <td class="mathsigns">(</td>
-            <td class="mathsigns">)</td>
-            <td class="mathsigns">+</td>
+            <td @onclick='(() => SelectIElement(new MathElement(MathSymbols.LeftBracket)))' class="mathsigns">(</td>
+            <td @onclick='(() => SelectIElement(new MathElement(MathSymbols.RightBracket)))'class="mathsigns">)</td>
+            <td @onclick='(() => SelectIElement(new MathElement(MathSymbols.Add)))' class="mathsigns">+</td>
         </tr>
     </table>
     <div >
         <button id="button">CALCULATE CHEMICAL FACTORS</button>
-        
+
     </div>
-        
+
 </div>
 
 @code {
+    [Parameter]
+    public IElement CurrentElement { get; set; }
 
+    [Parameter]
+    public EventCallback<IElement> CurrentElementChanged { get; set; }
+
+    public async Task SelectIElement(IElement element)
+    {
+        await CurrentElementChanged.InvokeAsync(element);
+    }
 }

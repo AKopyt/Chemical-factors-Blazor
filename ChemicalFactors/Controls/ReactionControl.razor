@@ -7,6 +7,11 @@
 
         }
     </div>
+    
+    <div>
+    <img class="arrow1" src="/img/arrow.svg" />
+    </div>
+    
     <div id="rightlist">
         @foreach (var element in ReactionViewModel.ProductsList)
         {
@@ -15,13 +20,13 @@
         }
 
     </div>
-    <img class="arrow1" src="/img/arrow.svg" />
+    
 
 
 </div>
 <div id="sideofreaction">
-    <button id="leftbutton">SUBSTRATES</button>
-    <button id="rightbutton">PRODUCTS</button>
+    <button @onclick='(()=>ReactionViewModel.ChangeToSubstratsSide())' id="leftbutton">SUBSTRATES</button>
+    <button @onclick='(()=>ReactionViewModel.ChangeToProductsSide())' id="rightbutton">PRODUCTS</button>
 </div>
 
 

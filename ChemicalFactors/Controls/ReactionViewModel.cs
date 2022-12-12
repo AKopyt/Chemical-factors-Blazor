@@ -4,17 +4,17 @@
     {
         public ReactionViewModel()
         {
-            SubstratsList = new List<Element>();
-            ProductsList = new List<Element>();
+            SubstratsList = new List<IElement>();
+            ProductsList = new List<IElement>();
             CurrentSide = SideOfReaction.Substrats;
         }
 
-        public List<Element> SubstratsList { get; set; }
-        public List<Element> ProductsList { get; set; }
+        public List<IElement> SubstratsList { get; set; }
+        public List<IElement> ProductsList { get; set; }
 
         public SideOfReaction CurrentSide { get; set; }
 
-        public void PushToList(Element element)
+        public void PushToList(IElement element)
         {
             if (CurrentSide==SideOfReaction.Substrats)
                 SubstratsList.Add(element);
@@ -34,6 +34,11 @@
         public void ChangeToProductsSide()
         {
             CurrentSide = SideOfReaction.Products;
+        }
+
+        public ReactionResult CalculateReaction(List<IElement> substratsList, List<IElement> productList)
+        {
+            throw new NotImplementedException();
         }
     }
 }
