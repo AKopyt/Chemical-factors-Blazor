@@ -62,6 +62,7 @@ namespace ChemicalFactorsTests
             
 
             Dictionary<IElement, int> expectedResult = new Dictionary<IElement, int>();
+            
             expectedResult.Add(new Element("Al"), 1);
             expectedResult.Add(new Element("Cl"), 3);
             expectedResult.Add(new Element("K"), 2);
@@ -85,10 +86,14 @@ namespace ChemicalFactorsTests
 
             //act
 
-            var result = reactionViewModel.AmountOfElementsInBothSideOfReaction(substratsList);
+            var result = reactionViewModel.GetAmountOfElementsOnList(substratsList);
 
             //assert
-            result.Should().BeEquivalentTo(expectedResult);
+            foreach (var pair in expectedResult)
+            {
+                result.Contains(pair).Should().BeTrue();
+
+            }
 
 
 

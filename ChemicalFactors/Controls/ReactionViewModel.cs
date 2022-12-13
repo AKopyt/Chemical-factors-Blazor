@@ -41,10 +41,38 @@
             throw new NotImplementedException();
         }
 
-        public Dictionary<IElement, int> AmountOfElementsInBothSideOfReaction(List<IElement> list)
+        public Dictionary<IElement, int> GetAmountOfElementsOnList(List<IElement> list)
         {
-          
-            
+
+            Dictionary<IElement,int> amountOfElements = new Dictionary<IElement,int>();
+           
+            foreach (var item in list)
+            {
+                if (item.GetType() == typeof(Element))
+                {
+                    amountOfElements.Add(item, 0);
+                }
+                else if (item.GetType() == typeof(IndexInReaction))
+                {
+                    IndexInReaction indexInReaction = (IndexInReaction)item;
+                    int index = list.IndexOf(item);
+                    IElement element = list.ElementAt(index - 1);
+                    amountOfElements[element] += indexInReaction.Index;
+                }
+
+            }
+
+            foreach (var pair in amountOfElements)
+            {
+                if (pair.Value == 0)
+                {
+                    amountOfElements[pair.Key] = 1;
+                }
+                   
+
+            }
+
+            return amountOfElements;
         }
 
         public void CompareBothSideOfReaction()

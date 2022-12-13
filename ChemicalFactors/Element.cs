@@ -2,7 +2,7 @@
 
 namespace ChemicalFactors
 {
-    public class Element : IElement
+    public record Element : IElement
     {
         public Element(string symbol)
         {
