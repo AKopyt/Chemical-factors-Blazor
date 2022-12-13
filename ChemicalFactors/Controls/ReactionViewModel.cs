@@ -40,5 +40,34 @@
         {
             throw new NotImplementedException();
         }
+
+        public Dictionary<IElement, int> AmountOfElementsInBothSideOfReaction(List<IElement> list)
+        {
+          
+            
+        }
+
+        public void CompareBothSideOfReaction()
+        {
+
+
+
+        }
+
+        public void ChemicalReactionWithSelectedFactors()
+        {
+
+
+
+        }
+
+
+
+
+
+
+
+
+
     }
 }
