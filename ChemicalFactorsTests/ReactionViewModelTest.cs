@@ -53,6 +53,52 @@ namespace ChemicalFactorsTests
         }
 
         [Fact]
+
+        public void TestingAmountOfElementsWithFactorsAndIndexAfterBrackets()
+        {
+            //arrange
+            List<IElement> productsList = new List<IElement>();
+            ReactionViewModel reactionViewModel = new ReactionViewModel();
+            // -> 2Al2(SO4)3 + K(Cl)2
+
+            Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
+
+            expectedResult.Add(new Element("Al"), 4);
+            expectedResult.Add(new Element("S"), 6);
+            expectedResult.Add(new Element("O"), 24);
+            expectedResult.Add(new Element("K"), 1);
+            expectedResult.Add(new Element("Cl"), 1);
+
+            productsList.Add(new ChemicalFactor(2));
+            productsList.Add(new Element("Al"));
+            productsList.Add(new IndexInReaction(2));
+            productsList.Add(new MathElement(MathSymbols.LeftBracket));
+            productsList.Add(new Element("S"));
+            productsList.Add(new Element("O"));
+            productsList.Add(new IndexInReaction(4));
+            productsList.Add(new MathElement(MathSymbols.RightBracket));
+            productsList.Add(new IndexInReaction(3));
+            productsList.Add(new MathElement(MathSymbols.Add));
+            productsList.Add(new Element("K"));
+            productsList.Add(new MathElement(MathSymbols.LeftBracket));
+            productsList.Add(new Element("Cl"));
+            productsList.Add(new MathElement(MathSymbols.RightBracket));
+            productsList.Add(new IndexInReaction(2));
+
+            //act
+
+            var result = reactionViewModel.GetAmountOfElementsOnList(productsList);
+
+            //assert
+            foreach (var pair in expectedResult)
+            {
+                result.Contains(pair).Should().BeTrue();
+
+            }
+
+
+        }
+        [Fact]
         public void TestingAmountOfElementsWithFactors()
         {
             //arrange
@@ -95,12 +141,6 @@ namespace ChemicalFactorsTests
                 result.Contains(pair).Should().BeTrue();
 
             }
-
-
-
-
-
-
 
 
         }
