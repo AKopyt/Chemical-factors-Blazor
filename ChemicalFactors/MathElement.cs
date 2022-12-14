@@ -11,6 +11,11 @@ public class MathElement : IElement
             Symbol = ")";
         if(symbol == MathSymbols.Add)
             Symbol = "+";
+
+        MathSymbol = symbol;
     }
+
     public string Symbol { get; set; }
+
+    public MathSymbols MathSymbol { get; set; }
 }

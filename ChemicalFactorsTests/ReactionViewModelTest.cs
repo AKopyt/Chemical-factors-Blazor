@@ -53,6 +53,60 @@ namespace ChemicalFactorsTests
         }
 
         [Fact]
+        public void TestingAmountOfElementsWithFactors()
+        {
+            //arrange
+            List<IElement> substratsList = new List<IElement>();
+            ReactionViewModel reactionViewModel = new ReactionViewModel();
+            //Al(Cl3) + K2(SO4) -> Al2(SO4)3 + K(CL)
+
+
+            Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
+
+            expectedResult.Add(new Element("Al"), 2);
+            expectedResult.Add(new Element("Cl"), 6);
+            expectedResult.Add(new Element("K"), 6);
+            expectedResult.Add(new Element("S"), 3);
+            expectedResult.Add(new Element("O"), 12);
+
+            substratsList.Add(new ChemicalFactor(2));
+            substratsList.Add(new Element("Al"));
+            substratsList.Add(new MathElement(MathSymbols.LeftBracket));
+            substratsList.Add(new Element("Cl"));
+            substratsList.Add(new IndexInReaction(3));
+            substratsList.Add(new MathElement(MathSymbols.RightBracket));
+            substratsList.Add(new MathElement(MathSymbols.Add));
+            substratsList.Add(new ChemicalFactor(3));
+            substratsList.Add(new Element("K"));
+            substratsList.Add(new IndexInReaction(2));
+            substratsList.Add(new MathElement(MathSymbols.LeftBracket));
+            substratsList.Add(new Element("S"));
+            substratsList.Add(new Element("O"));
+            substratsList.Add(new IndexInReaction(4));
+            substratsList.Add(new MathElement(MathSymbols.RightBracket));
+
+            //act
+
+            var result = reactionViewModel.GetAmountOfElementsOnList(substratsList);
+
+            //assert
+            foreach (var pair in expectedResult)
+            {
+                result.Contains(pair).Should().BeTrue();
+
+            }
+
+
+
+
+
+
+
+
+        }
+       
+        
+        [Fact]
         public void TestingAmountOfElements()
         {
             //arrange
@@ -61,7 +115,7 @@ namespace ChemicalFactorsTests
             //Al(Cl3) + K2(SO4) -> Al2(SO4)3 + K(CL)
             
 
-            Dictionary<IElement, int> expectedResult = new Dictionary<IElement, int>();
+            Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
             
             expectedResult.Add(new Element("Al"), 1);
             expectedResult.Add(new Element("Cl"), 3);

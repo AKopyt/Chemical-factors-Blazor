@@ -1,4 +1,7 @@
-﻿namespace ChemicalFactors.Controls
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text;
+using ChemicalFactors;
+namespace ChemicalFactors.Controls
 {
     public class ReactionViewModel
     {
@@ -41,23 +44,25 @@
             throw new NotImplementedException();
         }
 
-        public Dictionary<IElement, int> GetAmountOfElementsOnList(List<IElement> list)
+        public Dictionary<Element, int> GetAmountOfElementsOnList(List<IElement> list)
         {
 
-            Dictionary<IElement,int> amountOfElements = new Dictionary<IElement,int>();
+            Dictionary<Element,int> amountOfElements = new Dictionary<Element,int>();
            
             foreach (var item in list)
             {
                 if (item.GetType() == typeof(Element))
                 {
-                    amountOfElements.Add(item, 0);
+                    var castedItem = (Element)item;
+                    amountOfElements.Add(castedItem, 0);
                 }
                 else if (item.GetType() == typeof(IndexInReaction))
                 {
                     IndexInReaction indexInReaction = (IndexInReaction)item;
                     int index = list.IndexOf(item);
                     IElement element = list.ElementAt(index - 1);
-                    amountOfElements[element] += indexInReaction.Index;
+                    var castedItem = (Element)element;
+                    amountOfElements[castedItem] += indexInReaction.Index;
                 }
 
             }
@@ -68,9 +73,55 @@
                 {
                     amountOfElements[pair.Key] = 1;
                 }
-                   
+            }
+            
+            int chemicalfactor = 1;
+
+            List<Element> elementsToMultiply = new List<Element>();
+
+            foreach (var item in list)
+            {
+                if (item.GetType() == typeof(ChemicalFactor))
+                {
+                    var castedItem = (ChemicalFactor)item;
+                    chemicalfactor = castedItem.Factor;
+                }
+
+                else if (item.GetType() == typeof(Element))
+                {
+                    Element element = (Element)item;
+                    elementsToMultiply.Add(element);
+                }
+                else if (item.GetType() == typeof(MathElement))
+                {
+                    MathElement mathElement = (MathElement)item;
+                    if (mathElement.MathSymbol == MathSymbols.Add)
+                    {
+                        foreach (var foundedElement in elementsToMultiply)
+                        {
+                            amountOfElements[foundedElement] = amountOfElements[foundedElement]* chemicalfactor; 
+                           
+                            
+                        }
+                        elementsToMultiply.Clear();
+                    }
+                }
+
+                if (list.Last() == item)
+                {
+                    foreach (var foundedElement in elementsToMultiply)
+                    {
+                        amountOfElements[foundedElement] = amountOfElements[foundedElement]* chemicalfactor;
+
+
+                    }
+                    elementsToMultiply.Clear();
+
+                }
 
             }
+
+
 
             return amountOfElements;
         }
