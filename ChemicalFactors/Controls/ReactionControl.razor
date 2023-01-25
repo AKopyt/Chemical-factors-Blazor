@@ -1,5 +1,4 @@
 ﻿<div id="reaction">
-    
     <div class="leftlist">
         @foreach (var element in ReactionViewModel.SubstratsList)
         {
@@ -25,8 +24,8 @@
 
 </div>
 <div id="sideofreaction">
-    <button @onclick='(()=>ReactionViewModel.ChangeToSubstratsSide())' id="leftbutton">SUBSTRATES</button>
-    <button @onclick='(()=>ReactionViewModel.ChangeToProductsSide())' id="rightbutton">PRODUCTS</button>
+    <button @onclick='ReactionViewModel.ChangeToSubstratsSide' id="leftbutton">SUBSTRATES</button>
+    <button @onclick='ReactionViewModel.ChangeToProductsSide' id="rightbutton">PRODUCTS</button>
 </div>
 
 

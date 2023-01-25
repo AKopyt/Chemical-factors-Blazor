@@ -157,7 +157,7 @@
         </div>
 
  @code {
-
+     
      [Parameter]
      public IElement CurrentElement { get; set; }
 
@@ -167,6 +167,7 @@
 
     public async Task SelectIElement(IElement element)
     {
+        CurrentElement = element;
         await CurrentElementChanged.InvokeAsync(element);
     }
 
