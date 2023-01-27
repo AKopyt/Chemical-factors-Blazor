@@ -27,7 +27,6 @@ namespace ChemicalFactors.Controls
                 ProductsList.Add(element);
             }
 
-
         }
 
         public void ChangeToSubstratsSide()
@@ -60,8 +59,6 @@ namespace ChemicalFactors.Controls
                         MainList.Add(SubList);
                         SubList = new List<IElement>();
                     }
-
-
                 }
                 else
                 {
@@ -70,73 +67,101 @@ namespace ChemicalFactors.Controls
                     {
                         MainList.Add(SubList);
                     }
-
                 }
             }
 
             return MainList;
         }
 
-        public Dictionary<Element, int> GetElementsBetweenBracket(List<IElement> list)
+        public Dictionary<Element, int> GetElementsExceptBracket(List<List<IElement>> list)
+        {
+            Dictionary<Element, int> elementsExceptBracket = new Dictionary<Element, int>();
+
+            bool skipElements = false;
+            foreach (var compounds in list)
+            {
+                foreach (var element in compounds)
+                {
+
+                    if (element.GetType() == typeof(MathElement))
+                    {
+                        var castedItem = (MathElement)element;
+                        if (castedItem.MathSymbol == MathSymbols.LeftBracket)
+                        {
+                            skipElements = true; 
+                            //?????????????
+                        }
+                    }
+
+                    if (element.GetType() == typeof(Element))
+                    {
+                        var castedItem = (Element)element;
+                        elementsExceptBracket.Add(castedItem, 0);
+
+                    }
+                    else if (element.GetType() == typeof(IndexInReaction))
+                    {
+
+                        int index = compounds.IndexOf(element);
+                        IElement oneItemBefore = compounds.ElementAt(index - 1);
+                        if (oneItemBefore.GetType() == typeof(Element))
+                        {
+                            IndexInReaction indexInReaction = (IndexInReaction)element;
+
+                            var castedItem = (Element)oneItemBefore;
+                            elementsExceptBracket[castedItem] += indexInReaction.Index;
+                        }
+                    }
+
+                }
+            }
+
+            foreach (var pair in elementsExceptBracket)
+            {
+                if (pair.Value == 0)
+                {
+                    elementsExceptBracket[pair.Key] = 1;
+                }
+            }
+
+            return elementsExceptBracket;
+
+        }
+
+
+        public Dictionary<Element, int> GetElementsBetweenBracket(List<List<IElement>> list)
         {
 
             Dictionary<Element, int> elementsBetweenBrackets = new Dictionary<Element, int>();
 
-            foreach (var item in list)
+            foreach (var compounds in list)
             {
-                if (item.GetType() == typeof(MathSymbols))
+                foreach (var element in compounds)
                 {
-                    // var castedItem = (MathSymbols.LeftBracket)
-                    //castedItem = list.First();
+                   
+
+
+
+
+
                 }
 
+
+
             }
+
+
 
             return elementsBetweenBrackets;
         }
 
 
-        public Dictionary<Element, int> CountElementsByIndex(List<IElement> list)
-        {
-            Dictionary<Element, int> amountOfElements = new();
 
-            foreach (var item in list)
-            {
-                if (item.GetType() == typeof(Element))
-                {
-                    var castedItem = (Element)item;
-                    amountOfElements.Add(castedItem, 0);
-                }
-                else if (item.GetType() == typeof(IndexInReaction))
-                {
 
-                    int index = list.IndexOf(item);
-                    IElement oneItemBefore = list.ElementAt(index - 1);
-                    if (oneItemBefore.GetType() == typeof(Element))
-                    {
-                        IndexInReaction indexInReaction = (IndexInReaction)item;
-
-                        var castedItem = (Element)oneItemBefore;
-                        amountOfElements[castedItem] += indexInReaction.Index;
-                    }
-                }
-
-            }
-
-            foreach (var pair in amountOfElements)
-            {
-                if (pair.Value == 0)
-                {
-                    amountOfElements[pair.Key] = 1;
-                }
-            }
-
-            return amountOfElements;
-        }
     }
+
 }
 
 
 
 
-    

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Configuration;
 using ChemicalFactors;
 using ChemicalFactors.Controls;
@@ -90,141 +91,90 @@ namespace ChemicalFactorsTests
 
             
         }
-        [Fact]
 
-        public void TestingAmountOfElementsWithFactorsAndIndexAfterBrackets()
+        [Fact]
+        public void GetElementsExceptBracketTest()
         {
             //arrange
-            List<IElement> productsList = new List<IElement>();
-            ReactionViewModel reactionViewModel = new ReactionViewModel();
-            // -> 2Al2(SO4)3 +6 K(Cl)2
-
+            //Ca(OH)2 + COOH
+            List<IElement> FirstCompound = new List<IElement>();
+            List<IElement> SecondCOmpound = new List<IElement>();
+            List<List<IElement>> MainList = new List<List<IElement>>();
             Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
 
-            expectedResult.Add(new Element("Al"), 4);
-            expectedResult.Add(new Element("S"), 6);
-            expectedResult.Add(new Element("O"), 24);
-            expectedResult.Add(new Element("K"), 6);
-            expectedResult.Add(new Element("Cl"), 12);
+            ReactionViewModel reactionViewModel = new ReactionViewModel();
 
-            productsList.Add(new ChemicalFactor(2));
-            productsList.Add(new Element("Al"));
-            productsList.Add(new IndexInReaction(2));
-            productsList.Add(new MathElement(MathSymbols.LeftBracket));
-            productsList.Add(new Element("S"));
-            productsList.Add(new Element("O"));
-            productsList.Add(new IndexInReaction(4));
-            productsList.Add(new MathElement(MathSymbols.RightBracket));
-            productsList.Add(new IndexInReaction(3));
-            productsList.Add(new MathElement(MathSymbols.Add));
-            productsList.Add(new ChemicalFactor(6));
-            productsList.Add(new Element("K"));
-            productsList.Add(new MathElement(MathSymbols.LeftBracket));
-            productsList.Add(new Element("Cl"));
-            productsList.Add(new MathElement(MathSymbols.RightBracket));
-            productsList.Add(new IndexInReaction(2));
+            FirstCompound.Add(new Element("Ca"));
+            FirstCompound.Add(new MathElement(MathSymbols.LeftBracket));
+            FirstCompound.Add(new Element("O"));
+            FirstCompound.Add(new Element("H"));
+            FirstCompound.Add(new MathElement(MathSymbols.RightBracket));
+            FirstCompound.Add(new IndexInReaction(2));
+
+            SecondCOmpound.Add(new Element("C"));
+            SecondCOmpound.Add(new Element("O"));
+            SecondCOmpound.Add(new Element("O"));
+            SecondCOmpound.Add(new Element("H"));
+
+            MainList.Add(FirstCompound);
+            MainList.Add(SecondCOmpound);
 
             //act
-
-           // var result = reactionViewModel.GetAmountOfElementsOnList(productsList);
-
+            var result = reactionViewModel.GetElementsExceptBracket(MainList);
             //assert
+
+            expectedResult.Add(new Element("Ca"), 1);
+            expectedResult.Add(new Element("C"), 1);
+            expectedResult.Add(new Element("O"), 1);
+            expectedResult.Add(new Element("O"), 1);
+            expectedResult.Add(new Element("H"), 1);
+
             foreach (var pair in expectedResult)
             {
-               // result.Contains(pair).Should().BeTrue();
+                result.Contains(pair).Should().BeTrue();
 
             }
 
-
         }
+
         [Fact]
-        public void TestingAmountOfElementsWithFactors()
+        public void GetElementsBetweenBracketTest()
         {
             //arrange
-            List<IElement> substratsList = new List<IElement>();
-            ReactionViewModel reactionViewModel = new ReactionViewModel();
-            //2Al(Cl3) + 3K2(SO4) ->
-
-
+            //Ca(OH)2 + COOH
+            List<IElement> FirstCompound = new List<IElement>();
+            List<IElement> SecondCOmpound = new List<IElement>();
+            List<List<IElement>> MainList = new List<List<IElement>>();
             Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
 
-            expectedResult.Add(new Element("Al"), 2);
-            expectedResult.Add(new Element("Cl"), 6);
-            expectedResult.Add(new Element("K"), 6);
-            expectedResult.Add(new Element("S"), 3);
-            expectedResult.Add(new Element("O"), 12);
-
-            substratsList.Add(new ChemicalFactor(2));
-            substratsList.Add(new Element("Al"));
-            substratsList.Add(new MathElement(MathSymbols.LeftBracket));
-            substratsList.Add(new Element("Cl"));
-            substratsList.Add(new IndexInReaction(3));
-            substratsList.Add(new MathElement(MathSymbols.RightBracket));
-            substratsList.Add(new MathElement(MathSymbols.Add));
-            substratsList.Add(new ChemicalFactor(3));
-            substratsList.Add(new Element("K"));
-            substratsList.Add(new IndexInReaction(2));
-            substratsList.Add(new MathElement(MathSymbols.LeftBracket));
-            substratsList.Add(new Element("S"));
-            substratsList.Add(new Element("O"));
-            substratsList.Add(new IndexInReaction(4));
-            substratsList.Add(new MathElement(MathSymbols.RightBracket));
-
-            //act
-
-           // var result = reactionViewModel.GetAmountOfElementsOnList(substratsList);
-
-            //assert
-            foreach (var pair in expectedResult)
-            {
-                //result.Contains(pair).Should().BeTrue();
-
-            }
-
-
-        }
-       
-        
-        [Fact]
-        public void TestingAmountOfElements()
-        {
-            //arrange
-            List<IElement> substratsList = new List<IElement>();
             ReactionViewModel reactionViewModel = new ReactionViewModel();
-            //Al(Cl3) + K2(SO4) -> Al2(SO4)3 + K(CL)
-            
 
-            Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
-            
-            expectedResult.Add(new Element("Al"), 1);
-            expectedResult.Add(new Element("Cl"), 3);
-            expectedResult.Add(new Element("K"), 2);
-            expectedResult.Add(new Element("S"), 1);
-            expectedResult.Add(new Element("O"), 4);
-         
+            FirstCompound.Add(new Element("Ca"));
+            FirstCompound.Add(new MathElement(MathSymbols.LeftBracket));
+            FirstCompound.Add(new Element("O"));
+            FirstCompound.Add(new Element("H"));
+            FirstCompound.Add(new MathElement(MathSymbols.RightBracket));
+            FirstCompound.Add(new IndexInReaction(2));
 
-            substratsList.Add(new Element("Al"));
-            substratsList.Add(new MathElement(MathSymbols.LeftBracket));
-            substratsList.Add(new Element("Cl"));
-            substratsList.Add(new IndexInReaction(3));
-            substratsList.Add(new MathElement(MathSymbols.RightBracket));
-            substratsList.Add(new MathElement(MathSymbols.Add));
-            substratsList.Add(new Element("K"));
-            substratsList.Add(new IndexInReaction(2));
-            substratsList.Add(new MathElement(MathSymbols.LeftBracket));
-            substratsList.Add(new Element("S"));
-            substratsList.Add(new Element("O"));
-            substratsList.Add(new IndexInReaction(4));
-            substratsList.Add(new MathElement(MathSymbols.RightBracket));
+            SecondCOmpound.Add(new Element("C"));
+            SecondCOmpound.Add(new Element("O"));
+            SecondCOmpound.Add(new Element("O"));
+            SecondCOmpound.Add(new Element("H"));
+
+            MainList.Add(FirstCompound);
+            MainList.Add(SecondCOmpound);
 
             //act
-
-           // var result = reactionViewModel.GetAmountOfElementsOnList(substratsList);
-
+            var result = reactionViewModel.GetElementsBetweenBracket(MainList);
             //assert
+
+            expectedResult.Add(new Element("O"), 2);
+            expectedResult.Add(new Element("H"), 2);
+           
+
             foreach (var pair in expectedResult)
             {
-               // result.Contains(pair).Should().BeTrue();
+                result.Contains(pair).Should().BeTrue();
 
             }
 
@@ -234,7 +184,7 @@ namespace ChemicalFactorsTests
 
 
         [Fact]
-        public void CalculateReactionFirst()
+        public void CalculateReactionFirstTest()
         {
             //arrange
             List<IElement> substratsList = new List<IElement>();
@@ -315,7 +265,7 @@ namespace ChemicalFactorsTests
         }
 
         [Fact]
-        public void CalculateReactionSecond()
+        public void CalculateReactionSecondTest()
         {
             //arrange
             List<IElement> substratsList = new List<IElement>();

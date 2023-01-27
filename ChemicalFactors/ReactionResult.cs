@@ -11,5 +11,5 @@ public record ReactionResult
         SubstratsList = new List<IElement>();
         ProductsList = new List<IElement>();
 
-    }
+    }   
 }
