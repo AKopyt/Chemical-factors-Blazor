@@ -125,8 +125,7 @@ namespace ChemicalFactorsTests
 
             expectedResult.Add(new Element("Ca"), 1);
             expectedResult.Add(new Element("C"), 1);
-            expectedResult.Add(new Element("O"), 1);
-            expectedResult.Add(new Element("O"), 1);
+            expectedResult.Add(new Element("O"), 2);
             expectedResult.Add(new Element("H"), 1);
 
             foreach (var pair in expectedResult)

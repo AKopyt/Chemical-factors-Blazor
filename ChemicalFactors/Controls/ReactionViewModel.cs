@@ -78,6 +78,8 @@ namespace ChemicalFactors.Controls
             Dictionary<Element, int> elementsExceptBracket = new Dictionary<Element, int>();
 
             bool skipElements = false;
+            bool skipIndexAfterBracket = false;
+           
             foreach (var compounds in list)
             {
                 foreach (var element in compounds)
@@ -88,30 +90,60 @@ namespace ChemicalFactors.Controls
                         var castedItem = (MathElement)element;
                         if (castedItem.MathSymbol == MathSymbols.LeftBracket)
                         {
-                            skipElements = true; 
-                            //?????????????
+                            skipElements = true;
                         }
-                    }
-
-                    if (element.GetType() == typeof(Element))
-                    {
-                        var castedItem = (Element)element;
-                        elementsExceptBracket.Add(castedItem, 0);
-
-                    }
-                    else if (element.GetType() == typeof(IndexInReaction))
-                    {
-
-                        int index = compounds.IndexOf(element);
-                        IElement oneItemBefore = compounds.ElementAt(index - 1);
-                        if (oneItemBefore.GetType() == typeof(Element))
+                        else if (castedItem.MathSymbol == MathSymbols.RightBracket)
                         {
-                            IndexInReaction indexInReaction = (IndexInReaction)element;
-
-                            var castedItem = (Element)oneItemBefore;
-                            elementsExceptBracket[castedItem] += indexInReaction.Index;
+                            skipElements = false;
+                            skipIndexAfterBracket = true;
                         }
                     }
+
+                    if (skipElements == false)
+                    {
+                        if (element.GetType() == typeof(Element))
+                        {
+                            var castedItem = (Element)element;
+
+                            if (elementsExceptBracket.ContainsKey(castedItem))
+                            {
+                                if (elementsExceptBracket[castedItem] > 0)
+                                {
+                                    elementsExceptBracket[castedItem] += 1; 
+                                }
+                                else
+                                {
+                                    elementsExceptBracket[castedItem] = 2;
+                                }
+                            }
+                            else
+                            {
+                                elementsExceptBracket.Add(castedItem, 0);
+                            }
+                           
+
+                        }
+                        else if (element.GetType() == typeof(IndexInReaction))
+                        {
+                            if (skipIndexAfterBracket == false)
+                            {
+                                int index = compounds.IndexOf(element);
+                                IElement oneItemBefore = compounds.ElementAt(index - 1);
+                                if (oneItemBefore.GetType() == typeof(Element))
+                                {
+                                    IndexInReaction indexInReaction = (IndexInReaction)element;
+
+                                    var castedItem = (Element)oneItemBefore;
+                                    elementsExceptBracket[castedItem] += indexInReaction.Index;
+                                }
+                            }
+                            else
+                            {
+                                skipIndexAfterBracket = false; 
+                            }
+                        }
+                    }
+
 
                 }
             }
@@ -138,7 +170,7 @@ namespace ChemicalFactors.Controls
             {
                 foreach (var element in compounds)
                 {
-                   
+
 
 
 
