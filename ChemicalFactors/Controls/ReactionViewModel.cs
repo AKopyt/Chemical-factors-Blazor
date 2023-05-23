@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Xml.Linq;
 using ChemicalFactors;
 
 namespace ChemicalFactors.Controls
@@ -139,6 +142,7 @@ namespace ChemicalFactors.Controls
                     dictionary.Add(castedItem, 0);
                 }
             }
+
         }
 
         public void ChangeZeroToOneInDictionary(ref Dictionary<Element, int> dictionary)
@@ -174,93 +178,102 @@ namespace ChemicalFactors.Controls
             }
 
             ChangeZeroToOneInDictionary(ref elementsExceptBracket);
-            return elementsExceptBracket;
+            return elementsExceptBracket; 
 
         }
 
-
-        public Dictionary<Element, int> GetElementsBetweenBracket(List<List<IElement>> list)
+        public void CheckIfElementsAreBetweenBracket(IElement element, ref bool elementsBetweenBracketsFounded, ref bool endOfBracketsFounded)
         {
-            Dictionary<Element, int> elementsBetweenBrackets = new Dictionary<Element, int>();
-
-            bool skipElements = false;
-            bool skipIndexAfterBracket = false;
-
-            foreach (var compounds in list)
+            if (element.GetType() == typeof(MathElement))
             {
-                foreach (var element in compounds)
+                var castedItem = (MathElement)element;
+                if (castedItem.MathSymbol == MathSymbols.LeftBracket)
                 {
-                    if (element.GetType() == typeof(MathElement))
-                    {
-                        var castedItem = (MathElement)element;
-                        if (castedItem.MathSymbol == MathSymbols.LeftBracket)
-                        {
-                            skipElements = false;
-                        }
-                        else if (castedItem.MathSymbol == MathSymbols.RightBracket)
-                        {
-                            skipElements = true;
-                            skipIndexAfterBracket = false;
-                        }
-                    }
-                    if (skipElements == false)
-                    {
-                        if (element.GetType() == typeof(Element))
-                        {
-                            var castedItem = (Element)element;
-                            // wrzucic element na liste
-
-                            if (elementsBetweenBrackets.ContainsKey(castedItem))
-                            {
-                                if (elementsBetweenBrackets[castedItem] > 0)
-                                {
-                                    elementsBetweenBrackets[castedItem] += 1;
-                                }
-                                else
-                                {
-                                    elementsBetweenBrackets[castedItem] = 2;
-                                }
-                            }
-                            else
-                            {
-                                elementsBetweenBrackets.Add(castedItem, 0);
-                            }
-
-
-                        }
-                        else if (element.GetType() == typeof(IndexInReaction))
-                        {
-                            if (skipIndexAfterBracket == false)
-                            {
-                                //przemnozyc elementy z listy przez ten index 
-                                int index = compounds.IndexOf(element);
-                                IElement oneItemBefore = compounds.ElementAt(index - 1);
-                                if (oneItemBefore.GetType() == typeof(Element))
-                                {
-                                    IndexInReaction indexInReaction = (IndexInReaction)element;
-
-                                    var castedItem = (Element)oneItemBefore;
-                                    elementsBetweenBrackets[castedItem] += indexInReaction.Value;
-                                }
-                            }
-                            else
-                            {
-                                skipIndexAfterBracket = false;
-                            }
-                        }
-                    }
-
-
-
+                    elementsBetweenBracketsFounded = true;
+                }
+                else if (castedItem.MathSymbol == MathSymbols.RightBracket)
+                {
+                    elementsBetweenBracketsFounded = false;
+                    endOfBracketsFounded = true;
 
                 }
+            }
+           
+            
+        }
 
+        public void MultiplyElementBetweenBracketByIndex(IElement element, ref Dictionary<Element, int> dictionary, ref bool skipIndexAfterBracket, List<IElement> compounds)
+        {
+            if (element.GetType() == typeof(IndexInReaction))
+            {
+                IndexInReaction indexInReaction = (IndexInReaction)element;
 
+                if (skipIndexAfterBracket == false)
+                {
+                     
+                    int index = compounds.IndexOf(element);
+                    foreach (var pair in dictionary)
+                    {
+                        dictionary[pair.Key] *= index;
 
+                    }
+
+                }
+                else
+                {
+                    skipIndexAfterBracket = true;
+                }
             }
 
 
+        }
+        public Dictionary<Element, int> GetElementsBetweenBracketInReaction(List<List<IElement>> list)
+        {
+            Dictionary<Element, int> elementsBetweenBrackets = new Dictionary<Element, int>();
 
+            bool elementsBetweenBracketsFounded = false;
+            bool endOfBracketsFounded = false;
+
+            foreach (var compounds in list)
+            {
+                Dictionary<Element, int> singleCompundElementsDict = new Dictionary<Element, int>();
+                foreach (var element in compounds)
+                {
+                    CheckIfElementsAreBetweenBracket(element, ref elementsBetweenBracketsFounded, ref endOfBracketsFounded);
+                   
+                    if (elementsBetweenBracketsFounded == true)
+                    {
+                        AddOrUpdateElementDictionary(element, ref singleCompundElementsDict);
+                        ChangeZeroToOneInDictionary(ref singleCompundElementsDict);
+                     
+                    }
+                    else if(elementsBetweenBracketsFounded == false && endOfBracketsFounded ==true)
+                    {
+                        if (element.GetType() == typeof(IndexInReaction))
+                        {
+                            IndexInReaction indexInReaction = (IndexInReaction)element;
+
+                            foreach (var pair in singleCompundElementsDict)
+                                {
+                                    singleCompundElementsDict[pair.Key] *= indexInReaction.Value;
+                                }
+
+                                endOfBracketsFounded = false;
+                        }
+                    }
+                }
+
+                foreach (var pair in singleCompundElementsDict)
+                {
+                    if (elementsBetweenBrackets.ContainsKey(pair.Key))
+                        elementsBetweenBrackets[pair.Key] += pair.Value;
+                    else
+                    {
+                        elementsBetweenBrackets.Add(pair.Key,pair.Value);
+                    }
+                }
+
+            }
             return elementsBetweenBrackets;
         }
 

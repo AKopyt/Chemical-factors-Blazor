@@ -164,7 +164,7 @@ namespace ChemicalFactorsTests
             MainList.Add(SecondCOmpound);
 
             //act
-            var result = reactionViewModel.GetElementsBetweenBracket(MainList);
+            var result = reactionViewModel.GetElementsBetweenBracketInReaction(MainList);
             //assert
 
             expectedResult.Add(new Element("O"), 2);
