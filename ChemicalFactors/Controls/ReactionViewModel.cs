@@ -156,29 +156,27 @@ namespace ChemicalFactors.Controls
             }
         }
 
-        public Dictionary<Element, int> GetElementsExceptBracket(List<List<IElement>> list)
+        public Dictionary<Element, int> GetElementsExceptBracketInCompound(List<IElement> compound)
         {
-            Dictionary<Element, int> elementsExceptBracket = new Dictionary<Element, int>();
+            Dictionary<Element, int> elementsExceptBracketInCompound = new Dictionary<Element, int>();
 
             bool skipElements = false;
             bool skipIndexAfterBracket = false;
 
-            foreach (var compounds in list)
-            {
-                foreach (var element in compounds)
+                foreach (var element in compound)
                 {
                     CheckIfElementIsLeftOrRightBracket(element, ref skipElements, ref skipIndexAfterBracket);
 
                     if (skipElements == false)
                     {
-                        AddOrUpdateElementDictionary(element, ref elementsExceptBracket);
-                        UpdateElementsInDictionaryByIndexValue(element, ref elementsExceptBracket, ref skipIndexAfterBracket, compounds);
+                        AddOrUpdateElementDictionary(element, ref elementsExceptBracketInCompound);
+                        UpdateElementsInDictionaryByIndexValue(element, ref elementsExceptBracketInCompound, ref skipIndexAfterBracket, compound);
                     }
                 }
-            }
+            
 
-            ChangeZeroToOneInDictionary(ref elementsExceptBracket);
-            return elementsExceptBracket; 
+            ChangeZeroToOneInDictionary(ref elementsExceptBracketInCompound);
+            return elementsExceptBracketInCompound; 
 
         }
 
@@ -227,41 +225,53 @@ namespace ChemicalFactors.Controls
 
 
         }
-        public Dictionary<Element, int> GetElementsBetweenBracketInReaction(List<List<IElement>> list)
+
+        public Dictionary<Element, int> GetElementsBetweenBracketInCompound( List<IElement> compounds)
+        {
+
+            Dictionary<Element, int> elementsBetweenBracketInSingleCompound = new Dictionary<Element, int>();
+            bool elementsBetweenBracketsFounded = false;
+            bool endOfBracketsFounded = false;
+            
+            foreach (var element in compounds)
+            {
+                CheckIfElementsAreBetweenBracket(element, ref elementsBetweenBracketsFounded, ref endOfBracketsFounded);
+
+                if (elementsBetweenBracketsFounded == true)
+                {
+                    AddOrUpdateElementDictionary(element, ref elementsBetweenBracketInSingleCompound);
+                    ChangeZeroToOneInDictionary(ref elementsBetweenBracketInSingleCompound);
+
+                }
+                else if (elementsBetweenBracketsFounded == false && endOfBracketsFounded ==true)
+                {
+                    if (element.GetType() == typeof(IndexInReaction))
+                    {
+                        IndexInReaction indexInReaction = (IndexInReaction)element;
+
+                        foreach (var pair in elementsBetweenBracketInSingleCompound)
+                        {
+                            elementsBetweenBracketInSingleCompound[pair.Key] *= indexInReaction.Value;
+                        }
+
+                        endOfBracketsFounded = false;
+                    }
+                }
+
+                
+            }
+
+            return elementsBetweenBracketInSingleCompound;
+        }
+
+        public Dictionary<Element, int> GetElementsBetweenBracketInReactionFromOneSide(List<List<IElement>> listOfCompoundsInReactionFromOneSide)
         {
             Dictionary<Element, int> elementsBetweenBrackets = new Dictionary<Element, int>();
 
-            bool elementsBetweenBracketsFounded = false;
-            bool endOfBracketsFounded = false;
-
-            foreach (var compounds in list)
+            
+            foreach (var compound in listOfCompoundsInReactionFromOneSide)
             {
-                Dictionary<Element, int> singleCompundElementsDict = new Dictionary<Element, int>();
-                foreach (var element in compounds)
-                {
-                    CheckIfElementsAreBetweenBracket(element, ref elementsBetweenBracketsFounded, ref endOfBracketsFounded);
-                   
-                    if (elementsBetweenBracketsFounded == true)
-                    {
-                        AddOrUpdateElementDictionary(element, ref singleCompundElementsDict);
-                        ChangeZeroToOneInDictionary(ref singleCompundElementsDict);
-                     
-                    }
-                    else if(elementsBetweenBracketsFounded == false && endOfBracketsFounded ==true)
-                    {
-                        if (element.GetType() == typeof(IndexInReaction))
-                        {
-                            IndexInReaction indexInReaction = (IndexInReaction)element;
-
-                            foreach (var pair in singleCompundElementsDict)
-                                {
-                                    singleCompundElementsDict[pair.Key] *= indexInReaction.Value;
-                                }
-
-                                endOfBracketsFounded = false;
-                        }
-                    }
-                }
+                var singleCompundElementsDict = GetElementsBetweenBracketInCompound( compound);
 
                 foreach (var pair in singleCompundElementsDict)
                 {
@@ -269,12 +279,24 @@ namespace ChemicalFactors.Controls
                         elementsBetweenBrackets[pair.Key] += pair.Value;
                     else
                     {
-                        elementsBetweenBrackets.Add(pair.Key,pair.Value);
+                        elementsBetweenBrackets.Add(pair.Key, pair.Value);
                     }
                 }
 
             }
             return elementsBetweenBrackets;
+        }
+
+
+
+        public Dictionary<Element, int> AllElementsInCompound(ref Dictionary<Element, int> singleCompundElementsDict, ref Dictionary<Element, int> elementsExceptBracket)
+        {
+            Dictionary<Element, int> allElementsInCompound = new Dictionary<Element, int>();
+
+            
+
+            return allElementsInCompound;
+
         }
 
 

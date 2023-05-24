@@ -93,13 +93,11 @@ namespace ChemicalFactorsTests
         }
 
         [Fact]
-        public void GetElementsExceptBracketTest()
+        public void GetElementsExceptBracketInCompoundTest()
         {
             //arrange
-            //Ca(OH)2 + COOH
+            //Ca(OH)2 
             List<IElement> FirstCompound = new List<IElement>();
-            List<IElement> SecondCOmpound = new List<IElement>();
-            List<List<IElement>> MainList = new List<List<IElement>>();
             Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
 
             ReactionViewModel reactionViewModel = new ReactionViewModel();
@@ -111,27 +109,18 @@ namespace ChemicalFactorsTests
             FirstCompound.Add(new MathElement(MathSymbols.RightBracket));
             FirstCompound.Add(new IndexInReaction(2));
 
-            SecondCOmpound.Add(new Element("C"));
-            SecondCOmpound.Add(new Element("O"));
-            SecondCOmpound.Add(new Element("O"));
-            SecondCOmpound.Add(new Element("H"));
-
-            MainList.Add(FirstCompound);
-            MainList.Add(SecondCOmpound);
 
             //act
-            var result = reactionViewModel.GetElementsExceptBracket(MainList);
+            var result = reactionViewModel.GetElementsExceptBracketInCompound(FirstCompound);
             //assert
 
             expectedResult.Add(new Element("Ca"), 1);
-            expectedResult.Add(new Element("C"), 1);
-            expectedResult.Add(new Element("O"), 2);
-            expectedResult.Add(new Element("H"), 1);
 
+            expectedResult.Count.Should().Be(1);
             foreach (var pair in expectedResult)
             {
                 result.Contains(pair).Should().BeTrue();
-
+             
             }
 
         }
@@ -164,7 +153,7 @@ namespace ChemicalFactorsTests
             MainList.Add(SecondCOmpound);
 
             //act
-            var result = reactionViewModel.GetElementsBetweenBracketInReaction(MainList);
+            var result = reactionViewModel.GetElementsBetweenBracketInReactionFromOneSide(MainList);
             //assert
 
             expectedResult.Add(new Element("O"), 2);
@@ -180,8 +169,142 @@ namespace ChemicalFactorsTests
 
 
         }
+        [Fact]
+        public void GetElementsBetweenBracketTest2()
+        {
+            //arrange
+            //Ca(OH)2 + Ca(COOH)2
+            List<IElement> FirstCompound = new List<IElement>();
+            List<IElement> SecondCOmpound = new List<IElement>();
+            List<List<IElement>> MainList = new List<List<IElement>>();
+            Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
+
+            ReactionViewModel reactionViewModel = new ReactionViewModel();
+
+            FirstCompound.Add(new Element("Ca"));
+            FirstCompound.Add(new MathElement(MathSymbols.LeftBracket));
+            FirstCompound.Add(new Element("O"));
+            FirstCompound.Add(new Element("H"));
+            FirstCompound.Add(new MathElement(MathSymbols.RightBracket));
+            FirstCompound.Add(new IndexInReaction(2));
+
+            SecondCOmpound.Add(new Element("Ca"));
+            SecondCOmpound.Add(new MathElement(MathSymbols.LeftBracket));
+            SecondCOmpound.Add(new Element("C"));
+            SecondCOmpound.Add(new Element("O"));
+            SecondCOmpound.Add(new Element("O"));
+            SecondCOmpound.Add(new Element("H"));
+            SecondCOmpound.Add(new MathElement(MathSymbols.RightBracket));
+            SecondCOmpound.Add(new IndexInReaction(2));
+
+            MainList.Add(FirstCompound);
+            MainList.Add(SecondCOmpound);
+
+            //act
+            var result = reactionViewModel.GetElementsBetweenBracketInReactionFromOneSide(MainList);
+            //assert
+
+            expectedResult.Add(new Element("O"), 6);
+            expectedResult.Add(new Element("H"), 4);
+            expectedResult.Add(new Element("C"), 2);
 
 
+            foreach (var pair in expectedResult)
+            {
+                result.Contains(pair).Should().BeTrue();
+
+            }
+
+
+
+        }
+
+       
+
+        [Fact]
+        public void GetElementsBetweenBracketInCompoundTest()
+        {
+            //arrange
+            //Ca(OH)2 + CO(OH)2
+            List<IElement> FirstCompound = new List<IElement>();
+            List<IElement> SecondCOmpound = new List<IElement>();
+            List<List<IElement>> MainList = new List<List<IElement>>();
+            Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
+
+
+            ReactionViewModel reactionViewModel = new ReactionViewModel();
+
+            FirstCompound.Add(new Element("Ca"));
+            FirstCompound.Add(new MathElement(MathSymbols.LeftBracket));
+            FirstCompound.Add(new Element("O"));
+            FirstCompound.Add(new Element("H"));
+            FirstCompound.Add(new MathElement(MathSymbols.RightBracket));
+            FirstCompound.Add(new IndexInReaction(2));
+
+
+            //act
+            var result = reactionViewModel.GetElementsBetweenBracketInCompound(FirstCompound);
+            //assert
+
+            expectedResult.Add(new Element("O"), 2);
+            expectedResult.Add(new Element("H"), 2);
+
+
+            foreach (var pair in expectedResult)
+            {
+                result.Contains(pair).Should().BeTrue();
+
+            }
+
+
+
+        }
+
+        [Fact]
+        public void AllElementsInCompound()
+        {
+            //elementsBetweenBracketInSingleCompound {H:1, O:3, Ca:5}
+            //elementsExceptBracketInSingleCompound {H:2, Cl:2, Ca:2, Na:2}
+
+            //arrange
+            Dictionary<Element, int> elementsBetweenBracketInSingleCompound = new Dictionary<Element, int>();
+            Dictionary<Element, int> elementsExceptBracketInSingleCompound = new Dictionary<Element, int>();
+            Dictionary<Element, int> allElementsInCompound = new Dictionary<Element, int>();
+            
+            ReactionViewModel reactionViewModel = new ReactionViewModel();
+
+            elementsBetweenBracketInSingleCompound.Add(new Element("H"), 1);
+            elementsBetweenBracketInSingleCompound.Add(new Element("O"), 3);
+            elementsBetweenBracketInSingleCompound.Add(new Element("Ca"), 5);
+
+            elementsExceptBracketInSingleCompound.Add(new Element("H"),2);
+            elementsExceptBracketInSingleCompound.Add(new Element("Cl"),2);
+            elementsExceptBracketInSingleCompound.Add(new Element("Ca"),2);
+            elementsExceptBracketInSingleCompound.Add(new Element("Na"),2);
+
+            //act
+
+            var result = reactionViewModel.AllElementsInCompound(ref elementsBetweenBracketInSingleCompound,
+                ref elementsExceptBracketInSingleCompound);
+
+
+            //assert
+
+            allElementsInCompound.Add(new Element("H"), 3);
+            allElementsInCompound.Add(new Element("O"), 3);
+            allElementsInCompound.Add(new Element("Ca"), 7);
+            allElementsInCompound.Add(new Element("Cl"), 2);
+            allElementsInCompound.Add(new Element("Na"), 2);
+
+
+            foreach (var pair in allElementsInCompound)
+            {
+                result.Contains(pair).Should().BeTrue();
+
+            }
+
+        }
+        
         [Fact]
         public void CalculateReactionFirstTest()
         {
