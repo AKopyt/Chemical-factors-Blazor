@@ -200,40 +200,16 @@ namespace ChemicalFactors.Controls
             
         }
 
-        public void MultiplyElementBetweenBracketByIndex(IElement element, ref Dictionary<Element, int> dictionary, ref bool skipIndexAfterBracket, List<IElement> compounds)
-        {
-            if (element.GetType() == typeof(IndexInReaction))
-            {
-                IndexInReaction indexInReaction = (IndexInReaction)element;
+       
 
-                if (skipIndexAfterBracket == false)
-                {
-                     
-                    int index = compounds.IndexOf(element);
-                    foreach (var pair in dictionary)
-                    {
-                        dictionary[pair.Key] *= index;
-
-                    }
-
-                }
-                else
-                {
-                    skipIndexAfterBracket = true;
-                }
-            }
-
-
-        }
-
-        public Dictionary<Element, int> GetElementsBetweenBracketInCompound( List<IElement> compounds)
+        public Dictionary<Element, int> GetElementsBetweenBracketInCompound( List<IElement> compound)
         {
 
             Dictionary<Element, int> elementsBetweenBracketInSingleCompound = new Dictionary<Element, int>();
             bool elementsBetweenBracketsFounded = false;
             bool endOfBracketsFounded = false;
             
-            foreach (var element in compounds)
+            foreach (var element in compound)
             {
                 CheckIfElementsAreBetweenBracket(element, ref elementsBetweenBracketsFounded, ref endOfBracketsFounded);
 
@@ -264,30 +240,42 @@ namespace ChemicalFactors.Controls
             return elementsBetweenBracketInSingleCompound;
         }
 
-        public Dictionary<Element, int> GetElementsBetweenBracketInReactionFromOneSide(List<List<IElement>> listOfCompoundsInReactionFromOneSide)
+        public Dictionary<Element, int> MergeDictionary(Dictionary<Element, int> dictFirst,
+            Dictionary<Element, int> dictSecond)
         {
-            Dictionary<Element, int> elementsBetweenBrackets = new Dictionary<Element, int>();
+            Dictionary<Element, int> mergedDictionary = new Dictionary<Element, int>();
 
-            
-            foreach (var compound in listOfCompoundsInReactionFromOneSide)
+            foreach (var pair in dictSecond)
             {
-                var singleCompundElementsDict = GetElementsBetweenBracketInCompound( compound);
-
-                foreach (var pair in singleCompundElementsDict)
+                if (dictFirst.ContainsKey(pair.Key))
                 {
-                    if (elementsBetweenBrackets.ContainsKey(pair.Key))
-                        elementsBetweenBrackets[pair.Key] += pair.Value;
-                    else
-                    {
-                        elementsBetweenBrackets.Add(pair.Key, pair.Value);
-                    }
+                    dictFirst[pair.Key] += pair.Value;
                 }
-
+                else
+                {
+                    dictFirst.Add(pair.Key, pair.Value);
+                }
             }
-            return elementsBetweenBrackets;
+
+            mergedDictionary = dictFirst;
+
+            return mergedDictionary;
+
         }
 
+        public Dictionary<Element, int> GetElementsFromCompound(List<IElement> compound)
+        {
+            Dictionary<Element, int> elementsInCompound = new Dictionary<Element, int>();
 
+            var elementsBetweenBracket = GetElementsBetweenBracketInCompound(compound);
+            var elementsExceptBracket = GetElementsExceptBracketInCompound(compound);
+
+            elementsInCompound =  MergeDictionary(elementsExceptBracket, elementsBetweenBracket);
+
+
+            return elementsInCompound;
+
+        }
 
         public Dictionary<Element, int> AllElementsInCompound(ref Dictionary<Element, int> singleCompundElementsDict, ref Dictionary<Element, int> elementsExceptBracket)
         {

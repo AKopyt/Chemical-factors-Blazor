@@ -125,99 +125,6 @@ namespace ChemicalFactorsTests
 
         }
 
-        [Fact]
-        public void GetElementsBetweenBracketTest()
-        {
-            //arrange
-            //Ca(OH)2 + COOH
-            List<IElement> FirstCompound = new List<IElement>();
-            List<IElement> SecondCOmpound = new List<IElement>();
-            List<List<IElement>> MainList = new List<List<IElement>>();
-            Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
-
-            ReactionViewModel reactionViewModel = new ReactionViewModel();
-
-            FirstCompound.Add(new Element("Ca"));
-            FirstCompound.Add(new MathElement(MathSymbols.LeftBracket));
-            FirstCompound.Add(new Element("O"));
-            FirstCompound.Add(new Element("H"));
-            FirstCompound.Add(new MathElement(MathSymbols.RightBracket));
-            FirstCompound.Add(new IndexInReaction(2));
-
-            SecondCOmpound.Add(new Element("C"));
-            SecondCOmpound.Add(new Element("O"));
-            SecondCOmpound.Add(new Element("O"));
-            SecondCOmpound.Add(new Element("H"));
-
-            MainList.Add(FirstCompound);
-            MainList.Add(SecondCOmpound);
-
-            //act
-            var result = reactionViewModel.GetElementsBetweenBracketInReactionFromOneSide(MainList);
-            //assert
-
-            expectedResult.Add(new Element("O"), 2);
-            expectedResult.Add(new Element("H"), 2);
-           
-
-            foreach (var pair in expectedResult)
-            {
-                result.Contains(pair).Should().BeTrue();
-
-            }
-
-
-
-        }
-        [Fact]
-        public void GetElementsBetweenBracketTest2()
-        {
-            //arrange
-            //Ca(OH)2 + Ca(COOH)2
-            List<IElement> FirstCompound = new List<IElement>();
-            List<IElement> SecondCOmpound = new List<IElement>();
-            List<List<IElement>> MainList = new List<List<IElement>>();
-            Dictionary<Element, int> expectedResult = new Dictionary<Element, int>();
-
-            ReactionViewModel reactionViewModel = new ReactionViewModel();
-
-            FirstCompound.Add(new Element("Ca"));
-            FirstCompound.Add(new MathElement(MathSymbols.LeftBracket));
-            FirstCompound.Add(new Element("O"));
-            FirstCompound.Add(new Element("H"));
-            FirstCompound.Add(new MathElement(MathSymbols.RightBracket));
-            FirstCompound.Add(new IndexInReaction(2));
-
-            SecondCOmpound.Add(new Element("Ca"));
-            SecondCOmpound.Add(new MathElement(MathSymbols.LeftBracket));
-            SecondCOmpound.Add(new Element("C"));
-            SecondCOmpound.Add(new Element("O"));
-            SecondCOmpound.Add(new Element("O"));
-            SecondCOmpound.Add(new Element("H"));
-            SecondCOmpound.Add(new MathElement(MathSymbols.RightBracket));
-            SecondCOmpound.Add(new IndexInReaction(2));
-
-            MainList.Add(FirstCompound);
-            MainList.Add(SecondCOmpound);
-
-            //act
-            var result = reactionViewModel.GetElementsBetweenBracketInReactionFromOneSide(MainList);
-            //assert
-
-            expectedResult.Add(new Element("O"), 6);
-            expectedResult.Add(new Element("H"), 4);
-            expectedResult.Add(new Element("C"), 2);
-
-
-            foreach (var pair in expectedResult)
-            {
-                result.Contains(pair).Should().BeTrue();
-
-            }
-
-
-
-        }
 
        
 
@@ -261,41 +168,38 @@ namespace ChemicalFactorsTests
         }
 
         [Fact]
-        public void AllElementsInCompound()
+        public void GetElementsFromCompound()
         {
-            //elementsBetweenBracketInSingleCompound {H:1, O:3, Ca:5}
-            //elementsExceptBracketInSingleCompound {H:2, Cl:2, Ca:2, Na:2}
-
             //arrange
-            Dictionary<Element, int> elementsBetweenBracketInSingleCompound = new Dictionary<Element, int>();
-            Dictionary<Element, int> elementsExceptBracketInSingleCompound = new Dictionary<Element, int>();
+            
+            //Ca(COOH)2
+           
+            List<IElement> compound = new List<IElement>();
+
             Dictionary<Element, int> allElementsInCompound = new Dictionary<Element, int>();
             
             ReactionViewModel reactionViewModel = new ReactionViewModel();
 
-            elementsBetweenBracketInSingleCompound.Add(new Element("H"), 1);
-            elementsBetweenBracketInSingleCompound.Add(new Element("O"), 3);
-            elementsBetweenBracketInSingleCompound.Add(new Element("Ca"), 5);
-
-            elementsExceptBracketInSingleCompound.Add(new Element("H"),2);
-            elementsExceptBracketInSingleCompound.Add(new Element("Cl"),2);
-            elementsExceptBracketInSingleCompound.Add(new Element("Ca"),2);
-            elementsExceptBracketInSingleCompound.Add(new Element("Na"),2);
+            compound.Add(new Element("Ca"));
+            compound.Add(new MathElement(MathSymbols.LeftBracket));
+            compound.Add(new Element("C"));
+            compound.Add(new Element("O"));
+            compound.Add(new Element("O"));
+            compound.Add(new Element("H"));
+            compound.Add(new MathElement(MathSymbols.RightBracket));
+            compound.Add(new IndexInReaction(2));
 
             //act
 
-            var result = reactionViewModel.AllElementsInCompound(ref elementsBetweenBracketInSingleCompound,
-                ref elementsExceptBracketInSingleCompound);
-
-
+            var result = reactionViewModel.GetElementsFromCompound(compound);
+            
             //assert
 
-            allElementsInCompound.Add(new Element("H"), 3);
-            allElementsInCompound.Add(new Element("O"), 3);
-            allElementsInCompound.Add(new Element("Ca"), 7);
-            allElementsInCompound.Add(new Element("Cl"), 2);
-            allElementsInCompound.Add(new Element("Na"), 2);
-
+            allElementsInCompound.Add(new Element("Ca"), 1);
+            allElementsInCompound.Add(new Element("O"), 4);
+            allElementsInCompound.Add(new Element("C"), 2);
+            allElementsInCompound.Add(new Element("H"), 2);
+            
 
             foreach (var pair in allElementsInCompound)
             {
