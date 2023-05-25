@@ -47,34 +47,7 @@ namespace ChemicalFactors.Controls
             throw new NotImplementedException();
         }
 
-        public List<List<IElement>> SplitIntoSmallerList(List<IElement> list)
-        {
-            List<List<IElement>> MainList = new List<List<IElement>>();
-            List<IElement> SubList = new List<IElement>();
-
-            foreach (IElement item in list)
-            {
-                if (item.GetType() == typeof(MathElement))
-                {
-                    var castedItem = (MathElement)item;
-                    if (castedItem.MathSymbol == MathSymbols.Add)
-                    {
-                        MainList.Add(SubList);
-                        SubList = new List<IElement>();
-                    }
-                }
-                else
-                {
-                    SubList.Add(item);
-                    if (item == list.Last())
-                    {
-                        MainList.Add(SubList);
-                    }
-                }
-            }
-
-            return MainList;
-        }
+       
 
         public void CheckIfElementIsLeftOrRightBracket(IElement element, ref bool skipElements, ref bool skipIndexAfterBracket)
         {
@@ -277,19 +250,53 @@ namespace ChemicalFactors.Controls
 
         }
 
-        public Dictionary<Element, int> AllElementsInCompound(ref Dictionary<Element, int> singleCompundElementsDict, ref Dictionary<Element, int> elementsExceptBracket)
+        
+        public List<Compound> GetCompoundsFromReaction(List<IElement> listOfAllElementsInReaction, SideOfReaction sideOfReaction)
         {
-            Dictionary<Element, int> allElementsInCompound = new Dictionary<Element, int>();
+           
+            List<Compound> returnCompounds = new List<Compound>();
+            List<IElement> SubList = new List<IElement>();
 
-            
+            foreach (IElement item in listOfAllElementsInReaction)
+            {
+                if (item.GetType() == typeof(MathElement))
+                {
 
-            return allElementsInCompound;
+                    var castedItem = (MathElement)item;
+                    if (castedItem.MathSymbol == MathSymbols.Add)
+                    {
+                        Compound compound = new Compound();
+                        compound.SideOfReaction=sideOfReaction;
+                        compound.AllElementsOfCompound = SubList;
+                        compound.ElementsInCompound = GetElementsFromCompound(compound.AllElementsOfCompound);
+                        returnCompounds.Add(compound);
+                        SubList = new List<IElement>();
+
+                    }
+                    
+                }
+                else
+                {
+                    SubList.Add(item);
+                    if (item == listOfAllElementsInReaction.Last())
+                    {
+                        Compound compound = new Compound();
+                        compound.SideOfReaction=sideOfReaction;
+                        compound.AllElementsOfCompound = SubList;
+                        compound.ElementsInCompound = GetElementsFromCompound(compound.AllElementsOfCompound);
+                        returnCompounds.Add(compound);
+                    }
+
+                }
+
+            }
+
+            return returnCompounds;
+
 
         }
 
-
-
-
+       
     }
 
 }

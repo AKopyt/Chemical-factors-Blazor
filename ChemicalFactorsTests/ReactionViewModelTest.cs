@@ -53,43 +53,32 @@ namespace ChemicalFactorsTests
         }
 
         [Fact]
-        public void SplitIntoSmallerListTets()
-        {
+        public void GetCompoundsFromReactionTest()
+        { //H2 + O2 
 
             //arrange 
-
-            List<IElement> SubstratList = new List<IElement>();
-            List<IElement> HydrogenList = new List<IElement>();
-            List<IElement> OxygenList = new List<IElement>();
-            List<List<IElement>> ResultList = new List<List<IElement>>();
+            List<IElement> listOfAllElementsInReaction = new List<IElement>();
             ReactionViewModel reactionViewModel = new ReactionViewModel();
 
-            HydrogenList.Add(new Element("H"));
-            HydrogenList.Add(new IndexInReaction(2));
+            listOfAllElementsInReaction.Add(new Element("H"));
+            listOfAllElementsInReaction.Add(new IndexInReaction(2));
+            listOfAllElementsInReaction.Add(new MathElement(MathSymbols.Add));
+            listOfAllElementsInReaction.Add(new Element("O"));
+            listOfAllElementsInReaction.Add(new IndexInReaction(2));
 
-            SubstratList.AddRange(HydrogenList);
-            SubstratList.Add(new MathElement(MathSymbols.Add));
-
-            OxygenList.Add(new Element("O"));
-            OxygenList.Add(new IndexInReaction(2));
-
-            SubstratList.AddRange(OxygenList);
-
-            ResultList.Add(HydrogenList);
-            ResultList.Add(OxygenList);
 
             //act
-
-            var result = reactionViewModel.SplitIntoSmallerList(SubstratList);
-
+            var result = reactionViewModel.GetCompoundsFromReaction(listOfAllElementsInReaction, SideOfReaction.Substrats);
 
             //assert
-
-            result.Count.Should().Be(2);
-            result[0].Count.Should().Be(2);
-            result[1].Count.Should().Be(2);
-
             
+            result.Count.Should().Be(2);
+            result[0].AllElementsOfCompound.Count.Should().Be(2);
+            result[1].AllElementsOfCompound.Count.Should().Be(2);
+            result[0].ElementsInCompound.Should().Contain(new Element("H"), 2);
+            result[1].ElementsInCompound.Should().Contain(new Element("O"), 2);
+
+
         }
 
         [Fact]
